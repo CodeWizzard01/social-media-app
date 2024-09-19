@@ -8,4 +8,5 @@ import lombok.Data;
 public class PostCreator {
     private String id;
     private String name;
+    private String profilePhoto;
 }
