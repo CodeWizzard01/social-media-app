@@ -33,6 +33,8 @@ public class UserService {
 
     private final TokenService tokenService;
 
+    private final S3PresignedUrlService s3PresignedUrlService;
+
     public User register(UserDto userDto) throws IOException {
         User user = new User();
         user.setName(userDto.name());
@@ -59,7 +61,8 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(input.email(), input.password()));
         var user = (User) authentication.getPrincipal();
         String token= tokenService.generateToken(authentication);
-        return new LoginResponse(token, user.getName(), user.getEmail(), user.getProfilePhoto());
+        String profilePhotoUrl = user.getProfilePhoto() != null ? s3PresignedUrlService.generatePresignedUrl(user.getProfilePhoto()) : null;
+        return new LoginResponse(token, user.getName(), user.getEmail(), profilePhotoUrl);
     }
 
 
